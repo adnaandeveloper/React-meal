@@ -26,7 +26,19 @@ const Cart = (props) => {
     setIsCheckingOut(true)
   }
 
-  const submitOrderHandler = (userdata) => {}
+  const submitOrderHandler = (userData) => {
+    //orders.js is a new node of my choice
+    // Those are the data we are sending to the backend
+    fetch('https://mealapp-2c580-default-rtdb.firebaseio.com/orders.json', {
+      method: 'POST',
+      body: JSON.stringify({
+        user: userData,
+        orderedItems: cartCtx.items,
+      }),
+    })
+
+    console.log(userData, cartCtx.items)
+  }
 
   const cartItems = (
     <ul className={classes['cart-items']}>
