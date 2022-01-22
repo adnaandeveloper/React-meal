@@ -3,10 +3,11 @@ import MealItem from './MealItem/MealItem'
 import classes from './AvailableMeals.module.css'
 import { useEffect, useState } from 'react'
 
-const DUMMY_MEALS = [{}]
-
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [httpError, setHttpError] = useState('')
+  /** useState[false] or useState[null] or useState[]  = undefined*/
   //remmember to add.json its firebase !!
   // .sjon is somethin Firebase-specific,
   // which we have to add.
@@ -23,6 +24,10 @@ const AvailableMeals = () => {
       const response = await fetch(
         'https://mealapp-2c580-default-rtdb.firebaseio.com/Meals.json'
       )
+
+      if (!response.ok) {
+        throw new Error('Something went wrong')
+      }
       const responseData = await response.json()
       const loededMeals = []
 
@@ -35,10 +40,23 @@ const AvailableMeals = () => {
         })
       }
       setMeals(loededMeals)
+      setIsLoading(false)
     }
-
-    fetchMeals()
+    fetchMeals().catch((error) => {
+      setIsLoading(false)
+      setHttpError(error.message)
+    })
+    /** 
+ * inside of a promise we cant do that this way, put another way meget nemmer se neden under my bro
+    try {
+      await fetchMeals()
+    } catch (error) {
+      setIsLoading(false)
+      setHttpError(error.message)
+    }
+    */
   }, [])
+
   const mealsList = meals.map((meal) => (
     <MealItem
       key={meal.id}
@@ -49,10 +67,15 @@ const AvailableMeals = () => {
     />
   ))
 
+  if (httpError) {
+    return <section className={classes.errorMessage}>{httpError}</section>
+  }
+
   return (
     <section className={classes.meals}>
       <Card>
-        <ul>{mealsList}</ul>
+        {!isLoading && <ul>{mealsList}</ul>}
+        {isLoading && <ul>Loading..</ul>}
       </Card>
     </section>
   )
