@@ -50,7 +50,9 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckingOut && <Chechout onCancel={props.onClose} />}
+      {isCheckingOut && (
+        <Chechout onCancel={props.onClose} onConfirm={submitOrderHandler} />
+      )}
 
       {!isCheckingOut && (
         <div className={classes.actions}>
