@@ -26,6 +26,8 @@ const Cart = (props) => {
     setIsCheckingOut(true)
   }
 
+  const submitOrderHandler = (userdata) => {}
+
   const cartItems = (
     <ul className={classes['cart-items']}>
       {cartCtx.items.map((item) => (
@@ -48,17 +50,20 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckingOut && <Chechout />}
-      <div className={classes.actions}>
-        <button className={classes['button--alt']} onClick={props.onClose}>
-          Close
-        </button>
-        {hasItems && (
-          <button className={classes.button} onClick={orderHandler}>
-            Order
+      {isCheckingOut && <Chechout onCancel={props.onClose} />}
+
+      {!isCheckingOut && (
+        <div className={classes.actions}>
+          <button className={classes['button--alt']} onClick={props.onClose}>
+            Close
           </button>
-        )}
-      </div>
+          {hasItems && (
+            <button className={classes.button} onClick={orderHandler}>
+              Order
+            </button>
+          )}
+        </div>
+      )}
     </Modal>
   )
 }
